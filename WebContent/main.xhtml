@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head />
+<h:body>
+	<p:dataTable value="#{personBean.personList}" var="person" id="tbl"
+		scrollable="true" scrollHeight="250" selectionMode="single"
+		selection="#{personBean.selectedPerson}" rowKey="#{person.id}"
+		stickyHeader="true">
+
+		<p:ajax event="rowSelect" listener="#{personBean.onRowSelect}"
+			update=":delete :form:formfname :form:formlname :form:formemail :form:formphone :form:save :form:cancel"
+			process="tbl" />
+
+		<p:ajax event="rowUnselect" listener="#{personBean.onRowUnselect}"
+			update=":delete :form:formfname :form:formlname :form:formemail :form:formphone :form:save :form:cancel"
+			immediate="true" />
+
+		<p:column>
+			<f:facet name="header">First name</f:facet>
+			<h:outputText value="#{person.fname}" />
+		</p:column>
+		<p:column>
+			<f:facet name="header">Last name</f:facet>
+			<h:outputText value="#{person.lname}" />
+		</p:column>
+		<p:column>
+			<f:facet name="header">Phone number</f:facet>
+			<h:outputText value="#{person.phone}" />
+		</p:column>
+		<p:column>
+			<f:facet name="header">Email address</f:facet>
+			<h:outputText value="#{person.email}" />
+		</p:column>
+	</p:dataTable>
+
+	<h:panelGrid columns="2" id="buttons">
+		<p:commandButton id="delete" value="Delete" icon="ui-icon-trash"
+			actionListener="#{personBean.deletePerson}"
+			disabled="#{!(personBean.personSelected)}"
+			update=":tbl :delete :form:formfname :form:formlname :form:formemail :form:formphone :form:save :form:cancel"
+			immediate="true" />
+		<p:commandButton value="New" icon="ui-icon-new"
+			actionListener="#{personBean.newPerson}"
+			update=":tbl :delete :form:formfname :form:formlname :form:formemail :form:formphone :form:save :form:cancel" />
+	</h:panelGrid>
+
+	<h:form id="form">
+		<h:panelGrid columns="2" cellpadding="5"
+			disabled="#{!(personBean.personSelected)}">
+			<h:outputLabel for="fname" value="First name" />
+			<p:inputText value="#{personBean.fname}" id="formfname"
+				required="true" label="fname"
+				disabled="#{!(personBean.personSelected)}" />
+			<h:outputLabel for="lname" value="Last name" />
+			<p:inputText value="#{personBean.lname}" id="formlname"
+				required="true" label="lname"
+				disabled="#{!(personBean.personSelected)}" />
+			<h:outputLabel for="fname" value="Phone" />
+			<p:inputText value="#{personBean.phone}" id="formphone"
+				required="true" label="phone"
+				disabled="#{!(personBean.personSelected)}" />
+			<h:outputLabel for="fname" value="Email" />
+			<p:inputText value="#{personBean.email}" id="formemail"
+				required="true" label="email"
+				disabled="#{!(personBean.personSelected)}" />
+		</h:panelGrid>
+
+		<h:panelGrid columns="2" id="buttons">
+			<p:commandButton id="save" value="Save" execute="@form"
+				icon="ui-icon-save" actionListener="#{personBean.savePerson}"
+				update=":tbl" disabled="#{!(personBean.personSelected)}" />
+			<p:commandButton id="cancel" value="Cancel" icon="ui-icon-cancel"
+				disabled="#{!(personBean.personSelected)}"
+				actionListener="#{personBean.cancelForm}"
+				update=":delete :form:cancel :form:save :tbl :form:formfname :form:formlname :form:formemail :form:formphone" />
+		</h:panelGrid>
+	</h:form>
+	
+    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />  	
+</h:body>
+</html>
